@@ -7,7 +7,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -35,5 +38,18 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO Implement by streams
         return null;
+    }
+
+    /**
+     * Sorts UserMeal list by DateTime
+     *
+     * @param meals UserMeal list
+     * @return UserMeal list
+     */
+    private static List<UserMeal> sortByDateTime(List<UserMeal> meals) {
+        if (nonNull(meals)) {
+            meals.sort(Comparator.comparing(UserMeal::getDateTime));
+        }
+        return meals;
     }
 }
