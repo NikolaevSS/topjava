@@ -33,8 +33,7 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime,
                                                             LocalTime endTime, int caloriesPerDay) {
         List<UserMealWithExcess> userMealWithExcessList = new ArrayList<>();
-        Map<LocalDate, AtomicInteger> mapCaloriesPerDate = new ConcurrentHashMap<>();
-        sortByDateTime(meals);
+        Map<LocalDate, AtomicInteger> mapCaloriesPerDate = new HashMap<>();
         // Counting calories per date
         meals.forEach(userMeal -> {
             LocalDate currentDate = userMeal.getDateTime().toLocalDate();
@@ -45,14 +44,13 @@ public class UserMealsUtil {
         });
         // Filter the data and fill in the UserMealWithExcess list
         meals.forEach(userMeal -> {
-            LocalDate currentDate = userMeal.getDateTime().toLocalDate();
             if (isBetweenInclusive(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
                 userMealWithExcessList.add(
                         new UserMealWithExcess(
                                 userMeal.getDateTime(),
                                 userMeal.getDescription(),
                                 userMeal.getCalories(),
-                                mapCaloriesPerDate.get(currentDate).intValue() > caloriesPerDay
+                                mapCaloriesPerDate.get(userMeal.getDateTime().toLocalDate()).intValue() > caloriesPerDay
                         )
                 );
             }
@@ -63,16 +61,5 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO Implement by streams
         return null;
-    }
-
-    /**
-     * Sorts UserMeal list by DateTime
-     *
-     * @param meals UserMeal list
-     */
-    private static void sortByDateTime(List<UserMeal> meals) {
-        if (nonNull(meals)) {
-            meals.sort(Comparator.comparing(UserMeal::getDateTime));
-        }
     }
 }
