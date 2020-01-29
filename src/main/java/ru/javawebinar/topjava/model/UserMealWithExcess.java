@@ -1,21 +1,31 @@
 package ru.javawebinar.topjava.model;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserMealWithExcess {
-    private final LocalDateTime dateTime;
-
+    private LocalDateTime dateTime;
     private final String description;
-
     private final int calories;
+    private final AtomicInteger caloriesPerDay;
+    private final int caloriesLimitPerDay;
 
-    private final boolean excess;
-
-    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories,
+                              AtomicInteger caloriesPerDay, int caloriesLimitPerDay) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.excess = excess;
+        this.caloriesPerDay = caloriesPerDay;
+        this.caloriesLimitPerDay = caloriesLimitPerDay;
+    }
+
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories,
+                              Integer caloriesPerDay, int caloriesLimitPerDay) {
+        this(dateTime, description, calories, new AtomicInteger(caloriesPerDay), caloriesLimitPerDay);
+    }
+
+    public boolean isExcess() {
+        return caloriesPerDay.intValue() > caloriesLimitPerDay;
     }
 
     @Override
@@ -24,7 +34,7 @@ public class UserMealWithExcess {
                 "dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
-                ", excess=" + excess +
+                ", excess=" + isExcess() +
                 '}';
     }
 }
