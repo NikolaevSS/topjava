@@ -3,8 +3,10 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Objects.nonNull;
+
 public class UserMealWithExcess {
-    private LocalDateTime dateTime;
+    private final LocalDateTime dateTime;
     private final String description;
     private final int calories;
     private final AtomicInteger caloriesPerDay;
@@ -25,7 +27,7 @@ public class UserMealWithExcess {
     }
 
     public boolean isExcess() {
-        return caloriesPerDay.intValue() > caloriesLimitPerDay;
+        return nonNull(caloriesPerDay) && caloriesPerDay.intValue() > caloriesLimitPerDay;
     }
 
     @Override
