@@ -8,8 +8,8 @@
 
     <function>
         <name>formatLocalDateTime</name>
-        <function-class>ru.javawebinar.topjava.util.LocalDateTimeUtils</function-class>
-        <function-signature>java.lang.String format(java.time.LocalDateTime, java.lang.String)
+        <function-class>ru.javawebinar.topjava.util.TimeUtil</function-class>
+        <function-signature>java.lang.String format(java.time.LocalDateTime)
         </function-signature>
     </function>
 </taglib>

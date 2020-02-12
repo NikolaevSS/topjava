@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Meals</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/project/library/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="project/library/bootstrap/bootstrap.min.css">
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
@@ -19,9 +19,9 @@
     <%--@elvariable id="mealToList" type="java.util.List"--%>
     <c:forEach items="${mealToList}" var="mealTo">
         <tr style="color: ${mealTo.excess ? 'red' : 'green'}">
-            <td><c:out value="${f:formatLocalDateTime(mealTo.dateTime, 'HH:mm dd.MM.yyyy')}"/></td>
-            <td><c:out value="${mealTo.description}"/></td>
-            <td><c:out value="${mealTo.calories}"/></td>
+            <td>${f:formatLocalDateTime(mealTo.dateTime)}</td>
+            <td>${mealTo.description}</td>
+            <td>${mealTo.calories}</td>
         </tr>
     </c:forEach>
 </table>
