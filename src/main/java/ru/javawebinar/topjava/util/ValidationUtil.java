@@ -4,6 +4,8 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.util.List;
+
 public class ValidationUtil {
 
     public static <T> T checkNotFoundWithId(T object, int id) {
@@ -18,6 +20,11 @@ public class ValidationUtil {
     public static <T> T checkNotFound(T object, String msg) {
         checkNotFound(object != null, msg);
         return object;
+    }
+
+    public static <T> List<T> checkNotFound(List<T> list, String msg) {
+        checkNotFound(list != null && !list.isEmpty(), msg);
+        return list;
     }
 
     public static void checkNotFound(boolean found, String msg) {
