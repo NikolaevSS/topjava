@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
@@ -7,12 +7,34 @@
 <head>
     <title>Meal list</title>
     <style>
-        .normal {
-            color: green;
+        .filter {
+            padding: 5px;
         }
 
-        .excess {
-            color: red;
+        table {
+            min-width: 50%;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+
+        .filter,
+        .filter .label,
+        .filter .value {
+            display: inline-block;
+        }
+
+        .label {
+            width: 70px;
+        }
+
+        .value {
+            width: 140px;
         }
     </style>
 </head>
@@ -23,7 +45,35 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <table border="1" cellpadding="8" cellspacing="0">
+    <form>
+        <%--@elvariable id="dateFrom" type="java.time.LocalDate"--%>
+        <%--@elvariable id="dateTo" type="java.time.LocalDate"--%>
+        <%--@elvariable id="timeFrom" type="java.time.LocalTime"--%>
+        <%--@elvariable id="timeTo" type="java.time.LocalTime"--%>
+        <div>
+            <div class="filter">
+                <label for="dateFrom" class="label">From date</label>
+                <input id="dateFrom" type="date" name="dateFrom" value="${dateFrom}" class="value"/>
+            </div>
+            <div class="filter">
+                <label for="dateTo" class="label">To date</label>
+                <input id="dateTo" type="date" name="dateTo" value="${dateTo}" class="value"/>
+            </div>
+        </div>
+        <div>
+            <div class="filter">
+                <label for="timeFrom" class="label">From time</label>
+                <input id="timeFrom" type="time" name="timeFrom" value="${timeFrom}" class="value"/>
+            </div>
+            <div class="filter">
+                <label for="timeTo" class="label">To time</label>
+                <input id="timeTo" type="time" name="timeTo" value="${timeTo}" class="value"/>
+            </div>
+        </div>
+        <button type="submit" name="action" value="clearFilter">Cancel</button>
+        <button type="submit" name="action" value="filter">Filter</button>
+    </form>
+    <table>
         <thead>
         <tr>
             <th>Date</th>
@@ -33,9 +83,10 @@
             <th></th>
         </tr>
         </thead>
+        <%--@elvariable id="meals" type="java.util.List"--%>
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-            <tr class="${meal.excess ? 'excess' : 'normal'}">
+            <tr style="color: ${meal.excess ? "red" : "green"}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                         <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
