@@ -35,23 +35,25 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         appContext.close();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
 
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+        Meal meal = new Meal(getIdOrNull(request),
                 LocalDateTime.parse(request.getParameter("dateTime")),
-                SecurityUtil.authUserId(),
+                null,
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRestController.save(meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
+        } else {
+            mealRestController.update(meal, getId(request));
+        }
         response.sendRedirect("meals");
     }
 
@@ -69,7 +71,7 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), SecurityUtil.authUserId(), "", 1000) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
@@ -95,9 +97,17 @@ public class MealServlet extends HttpServlet {
         }
     }
 
+    private String getParamId(HttpServletRequest request) {
+        return Objects.requireNonNull(request.getParameter("id"));
+    }
+
     private int getId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("id"));
-        return Integer.parseInt(paramId);
+        return Integer.parseInt(getParamId(request));
+    }
+
+    private Integer getIdOrNull(HttpServletRequest request) {
+        String paramId = getParamId(request);
+        return paramId.isEmpty() ? null : Integer.valueOf(paramId);
     }
 
     private LocalDate getDate(HttpServletRequest request, String key) {

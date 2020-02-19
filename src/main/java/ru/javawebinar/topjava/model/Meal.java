@@ -6,12 +6,12 @@ import java.time.LocalTime;
 
 public class Meal extends AbstractBaseEntity {
     private final LocalDateTime dateTime;
-    private final Integer userId;
+    private Integer userId;
     private final String description;
     private final int calories;
 
-    public Meal(LocalDateTime dateTime, Integer userId, String description, int calories) {
-        this(null, dateTime, userId, description, calories);
+    public Meal(LocalDateTime dateTime, String description, int calories) {
+        this(null, dateTime, null, description, calories);
     }
 
     public Meal(Integer id, LocalDateTime dateTime, Integer userId, String description, int calories) {
@@ -24,6 +24,10 @@ public class Meal extends AbstractBaseEntity {
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public LocalDateTime getDateTime() {

@@ -5,12 +5,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,22 +29,26 @@ public class SpringMain {
             SecurityUtil.setAuthUserId(user.getId());
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             // Create
-            Meal meal = mealRestController.save(
-                    new Meal(LocalDateTime.now(), user.getId(), "Test", 100500)
+            Meal meal = mealRestController.create(
+                    new Meal(null, LocalDateTime.now(), user.getId(), "Test", 100500)
             );
             assert (nonNull(meal.getId()) && meal.getId() > 0);
             // Update
             assert (meal.getCalories() == 100500);
-            meal = mealRestController.save(
-                    new Meal(meal.getId(), LocalDateTime.now(), user.getId(), null, -1)
+            mealRestController.update(
+                    new Meal(meal.getId(), LocalDateTime.now(), user.getId(), null, -1),
+                    meal.getId()
             );
             assert (isNull(meal.getDescription()) && meal.getCalories() == -1);
             // Get
             assert (nonNull(mealRestController.get(meal.getId())));
-            List<Meal> meals = mealRestController.getAll();
-            assert (!meals.isEmpty());
-            meals = mealRestController.getFiltered(LocalDate.now(), LocalDate.now());
-            assert (!meals.isEmpty());
+            List<MealTo> mealToList = mealRestController.getAllTos();
+            assert (!mealToList.isEmpty());
+            mealToList = mealRestController.getFilteredTos(
+                    LocalDate.now(), LocalDate.now(),
+                    LocalTime.now().minusMinutes(1), LocalTime.now().plusMinutes(1)
+            );
+            assert (!mealToList.isEmpty());
             // Delete
             mealRestController.delete(meal.getId());
         }

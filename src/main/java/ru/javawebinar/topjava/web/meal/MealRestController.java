@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
@@ -22,8 +23,13 @@ public class MealRestController {
         this.mealService = mealService;
     }
 
-    public Meal save(Meal meal) {
-        return meal.isNew() ? mealService.create(meal) : mealService.update(meal);
+    public Meal create(Meal meal) {
+        return mealService.create(meal, authUserId());
+    }
+
+    public void update(Meal meal, int id) {
+        assureIdConsistent(meal, id);
+        mealService.update(meal, authUserId());
     }
 
     public void delete(int id) {
@@ -34,21 +40,13 @@ public class MealRestController {
         return mealService.get(id, authUserId());
     }
 
-    public List<Meal> getAll() {
-        return mealService.getAll(authUserId());
-    }
-
     public List<MealTo> getAllTos() {
-        return MealsUtil.getTos(getAll(), authUserCaloriesPerDay());
-    }
-
-    public List<Meal> getFiltered(LocalDate dateStart, LocalDate dateEnd) {
-        return mealService.getAll(authUserId(), dateStart, dateEnd);
+        return MealsUtil.getTos(mealService.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
     public List<MealTo> getFilteredTos(LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd) {
         return MealsUtil.getFilteredTos(
-                getFiltered(dateStart, dateEnd),
+                mealService.getAll(authUserId(), dateStart, dateEnd),
                 authUserCaloriesPerDay(),
                 Optional.ofNullable(timeStart).orElse(LocalTime.MIN),
                 Optional.ofNullable(timeEnd).orElse(LocalTime.MAX)
