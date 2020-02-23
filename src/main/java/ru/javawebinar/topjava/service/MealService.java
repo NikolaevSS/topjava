@@ -6,11 +6,8 @@ import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenInclusive;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 
 @Service
@@ -21,14 +18,6 @@ public class MealService {
 
     public MealService(MealRepository repository) {
         this.repository = repository;
-    }
-
-    private static Predicate<Meal> isMatchedUserId(Integer userId) {
-        return meal -> Objects.equals(meal.getUserId(), userId);
-    }
-
-    private static Predicate<Meal> isBetweenDates(LocalDate dateStart, LocalDate dateEnd) {
-        return meal -> isBetweenInclusive(meal.getDate(), dateStart, dateEnd);
     }
 
     public Meal create(Meal meal, int userId) {
@@ -48,15 +37,12 @@ public class MealService {
     }
 
     public List<Meal> getAll(int userId) {
-        return repository.getFiltered(isMatchedUserId(userId));
+        return repository.getAll(userId);
     }
 
-    public List<Meal> getAll(int userId, LocalDate dateStart, LocalDate dateEnd) {
+    public List<Meal> getAllBetweenDates(int userId, LocalDate dateStart, LocalDate dateEnd) {
         dateStart = Optional.ofNullable(dateStart).orElse(LocalDate.MIN);
         dateEnd = Optional.ofNullable(dateEnd).orElse(LocalDate.MAX);
-        return repository.getFiltered(
-                isMatchedUserId(userId)
-                        .and(isBetweenDates(dateStart, dateEnd))
-        );
+        return repository.getAllBetweenDates(userId, dateStart, dateEnd);
     }
 }

@@ -45,7 +45,7 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <form>
+    <form id="filter" method="get">
         <%--@elvariable id="dateFrom" type="java.time.LocalDate"--%>
         <%--@elvariable id="dateTo" type="java.time.LocalDate"--%>
         <%--@elvariable id="timeFrom" type="java.time.LocalTime"--%>
@@ -53,21 +53,21 @@
         <div>
             <div class="filter">
                 <label for="dateFrom" class="label">From date</label>
-                <input id="dateFrom" type="date" name="dateFrom" value="${dateFrom}" class="value"/>
+                <input id="dateFrom" type="date" name="dateFrom" value="${param.dateFrom}" class="value"/>
             </div>
             <div class="filter">
                 <label for="dateTo" class="label">To date</label>
-                <input id="dateTo" type="date" name="dateTo" value="${dateTo}" class="value"/>
+                <input id="dateTo" type="date" name="dateTo" value="${param.dateTo}" class="value"/>
             </div>
         </div>
         <div>
             <div class="filter">
                 <label for="timeFrom" class="label">From time</label>
-                <input id="timeFrom" type="time" name="timeFrom" value="${timeFrom}" class="value"/>
+                <input id="timeFrom" type="time" name="timeFrom" value="${param.timeFrom}" class="value"/>
             </div>
             <div class="filter">
                 <label for="timeTo" class="label">To time</label>
-                <input id="timeTo" type="time" name="timeTo" value="${timeTo}" class="value"/>
+                <input id="timeTo" type="time" name="timeTo" value="${param.timeTo}" class="value"/>
             </div>
         </div>
         <button type="submit" name="action" value="clearFilter">Cancel</button>

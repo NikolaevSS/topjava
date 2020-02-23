@@ -82,12 +82,11 @@ public class MealServlet extends HttpServlet {
                 LocalTime timeFrom = getTime(request, "timeFrom");
                 LocalTime timeTo = getTime(request, "timeTo");
                 log.info("Filter with dates from={}, to={}, time from={}, to={}", dateFrom, dateTo, timeFrom, timeTo);
-                setFilterAttributesDateTime(request, dateFrom, dateTo, timeFrom, timeTo);
                 request.setAttribute("meals", mealRestController.getFilteredTos(dateFrom, dateTo, timeFrom, timeTo));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "clearFilter":
-                setFilterAttributesDateTime(request, null, null, null, null);
+                removeAttributes(request, "dateFrom", "dateTo", "timeFrom", "timeTo");
             case "all":
             default:
                 log.info("getAll");
@@ -122,10 +121,9 @@ public class MealServlet extends HttpServlet {
         return isNull(string) || string.isEmpty();
     }
 
-    private void setFilterAttributesDateTime(HttpServletRequest request, LocalDate dateFrom, LocalDate dateTo, LocalTime timeFrom, LocalTime timeTo) {
-        request.setAttribute("dateFrom", dateFrom);
-        request.setAttribute("dateTo", dateTo);
-        request.setAttribute("timeFrom", timeFrom);
-        request.setAttribute("timeTo", timeTo);
+    private void removeAttributes(HttpServletRequest request, String... names) {
+        for (String name : names) {
+            request.removeAttribute(name);
+        }
     }
 }

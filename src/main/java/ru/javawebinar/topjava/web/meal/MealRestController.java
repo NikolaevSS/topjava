@@ -46,7 +46,7 @@ public class MealRestController {
 
     public List<MealTo> getFilteredTos(LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd) {
         return MealsUtil.getFilteredTos(
-                mealService.getAll(authUserId(), dateStart, dateEnd),
+                mealService.getAllBetweenDates(authUserId(), dateStart, dateEnd),
                 authUserCaloriesPerDay(),
                 Optional.ofNullable(timeStart).orElse(LocalTime.MIN),
                 Optional.ofNullable(timeEnd).orElse(LocalTime.MAX)
