@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Repository
 @Transactional(readOnly = true)
@@ -23,12 +23,15 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        meal.setUser(em.getReference(User.class, userId));
         if (meal.isNew()) {
+            meal.setUser(em.getReference(User.class, userId));
             em.persist(meal);
             return meal;
+        } else if (nonNull(get(meal.getId(), userId))) {
+            meal.setUser(em.getReference(User.class, userId));
+            return em.merge(meal);
         }
-        return isNull(get(meal.getId(), userId)) ? null : em.merge(meal);
+        return null;
     }
 
     @Override

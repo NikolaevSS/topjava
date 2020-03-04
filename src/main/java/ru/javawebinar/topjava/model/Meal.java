@@ -14,7 +14,7 @@ import java.time.LocalTime;
         @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id = :id AND m.user.id = :userId"),
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id = :id AND m.user.id = :userId"),
         @NamedQuery(name = Meal.GET_ALL_SORTED,
-                query = "SELECT m FROM Meal m JOIN FETCH m.user WHERE m.user.id = :userId ORDER BY m.dateTime DESC"
+                query = "SELECT m FROM Meal m WHERE m.user.id = :userId ORDER BY m.dateTime DESC"
         ),
         @NamedQuery(name = Meal.GET_BETWEEN_HALF_OPEN_SORTED,
                 query = "SELECT m FROM Meal m " +
@@ -47,6 +47,7 @@ public class Meal extends AbstractBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
     private User user;
 
     public Meal() {
