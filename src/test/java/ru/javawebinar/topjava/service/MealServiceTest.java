@@ -1,11 +1,11 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,10 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -34,30 +36,33 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    private static LocalTime startTime;
-    private static LocalTime finishTime;
+    private static final List<String> log = new ArrayList<>();
 
-    @Rule
-    public final TestRule watchman = new TestWatcher() {
+    @ClassRule
+    public static final Stopwatch classStopwatch = new Stopwatch() {
         @Override
-        protected void starting(Description description) {
-            startTime = LocalTime.now();
-            super.starting(description);
-        }
-
-        @Override
-        protected void finished(Description description) {
-            super.finished(description);
-            finishTime = LocalTime.now();
-            System.out.printf(
-                    "\nTest \"%s\"\n\tstart at: %s\n\tfinish at: %s\n\twas completed in: %d ms\n\n",
-                    description.getMethodName(), startTime.toString(), finishTime.toString(),
-                    (finishTime.getNano() - startTime.getNano()) / 1_000_000
-            );
+        protected void finished(long nanos, Description description) {
+            super.finished(nanos, description);
+            System.out.printf("\n\nAll tests was completed in: %d ms\n\n", TimeUnit.NANOSECONDS.toMillis(nanos));
+            log.forEach(System.out::println);
         }
     };
 
     @Rule
+    public final Stopwatch testStopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            super.finished(nanos, description);
+            String testLog = String.format("Test \"%s\" was completed in: %d ms",
+                    description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)
+            );
+            System.out.print(testLog);
+            log.add(testLog);
+        }
+    };
+
+    @Rule
+    @SuppressWarnings("deprecation")
     public ExpectedException expectedException = ExpectedException.none();
 
     @Autowired
