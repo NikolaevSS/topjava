@@ -1,13 +1,15 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -20,9 +22,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -36,28 +39,18 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    private static final List<String> log = new ArrayList<>();
-
-    @ClassRule
-    public static final Stopwatch classStopwatch = new Stopwatch() {
-        @Override
-        protected void finished(long nanos, Description description) {
-            super.finished(nanos, description);
-            System.out.printf("\n\nAll tests was completed in: %d ms\n\n", TimeUnit.NANOSECONDS.toMillis(nanos));
-            log.forEach(System.out::println);
-        }
-    };
+    private static final Logger LOGGER = LoggerFactory.getLogger("");
+    private static final Map<String, Long> TEST_DURATION_MAP = new HashMap<>();
 
     @Rule
     public final Stopwatch testStopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
             super.finished(nanos, description);
-            String testLog = String.format("Test \"%s\" was completed in: %d ms",
-                    description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)
-            );
-            System.out.print(testLog);
-            log.add(testLog);
+            String test = description.getMethodName();
+            Long duration = TimeUnit.NANOSECONDS.toMillis(nanos);
+            LOGGER.info(String.format("Test \"%s\" was completed in: %d ms", test, duration));
+            TEST_DURATION_MAP.put(test, duration);
         }
     };
 
@@ -69,6 +62,14 @@ public class MealServiceTest {
     private MealService service;
     @Autowired
     private MealRepository repository;
+
+    @AfterClass
+    public static void afterClass() {
+        String testsDuration = TEST_DURATION_MAP.entrySet().stream()
+                .map(entry -> String.format("%25s %4d ms", entry.getKey(), entry.getValue()))
+                .collect(Collectors.joining("\n", "\n", "\n"));
+        LOGGER.info(testsDuration);
+    }
 
     @Test
     public void delete() {
