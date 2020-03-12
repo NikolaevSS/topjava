@@ -6,21 +6,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Repository
 @Profile(Profiles.HSQL_DB)
-public class HsqldbJdbcMealRepository extends BaseJdbcMealRepository<Date> {
+public class HsqldbJdbcMealRepository extends BaseJdbcMealRepository<Timestamp> {
     @Autowired
     public HsqldbJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
     @Override
-    protected Date getDateTimeArg(LocalDateTime localDateTime) {
-        return DateTimeUtil.toDate(localDateTime);
+    protected Timestamp getDateTimeArg(LocalDateTime localDateTime) {
+        return Timestamp.valueOf(localDateTime);
     }
 }
