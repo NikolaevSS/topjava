@@ -8,10 +8,10 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <section>
-    <h2><spring:message code="${action == 'add' ? 'meal.add' : 'meal.edit'}"/></h2>
-
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="${action}">
+    <h2><spring:message code="${meal.isNew() ? 'meal.add' : 'meal.edit'}"/></h2>
+
+    <form method="post" action="${meal.isNew() ? 'add' : 'edit'}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/></dt>
