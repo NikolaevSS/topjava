@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 class MealRestControllerTest extends AbstractControllerTest {
     private static final String REST_URL = MealRestController.REST_URL + '/';
@@ -50,21 +50,23 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(MEALS, DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
     void getBetween() throws Exception {
-         MockHttpServletRequestBuilder servletRequestBuilder =
+        MockHttpServletRequestBuilder servletRequestBuilder =
                 MockMvcRequestBuilders
                         .get(REST_URL + "filter")
-                        .param("startDateTime", "2020-01-30T00:00:00")
-                        .param("endDateTime", "2020-01-31T23:59:59");
+                        .param("startDate", "2020-01-30")
+                        .param("startTime", "00:00:00")
+                        .param("endDate", "2020-01-31")
+                        .param("endTime", "23:59:59");
         perform(servletRequestBuilder)
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(MEALS, DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.getTos(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
