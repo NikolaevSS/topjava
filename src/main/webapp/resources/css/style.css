@@ -15,11 +15,13 @@ dd {
     vertical-align: top;
 }
 
-tr[data-mealExcess="false"] {
+tr[data-mealExcess="false"],
+tr[data-userEnabled="true"] {
     color: green;
 }
 
-tr[data-mealExcess="true"] {
+tr[data-mealExcess="true"],
+tr[data-userEnabled="false"] {
     color: red;
 }
 

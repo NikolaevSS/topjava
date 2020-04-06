@@ -1,25 +1,36 @@
-// $(document).ready(function () {
+const filterId = "filter";
+const filterForm = $("#".concat(filterId));
+
+function clearFilter() {
+    document.getElementById(filterId).reset();
+    updateTable();
+}
+
+function filter() {
+    $.ajax({
+        type: "GET",
+        url: context.ajaxUrl.concat(filterId),
+        data: filterForm.serialize()
+    }).done(function (data) {
+        context.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/admin/users/",
+            ajaxUrl: "ajax/meals/",
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
                 "columns": [
                     {
-                        "data": "name"
+                        "data": "dateTime"
                     },
                     {
-                        "data": "email"
+                        "data": "description"
                     },
                     {
-                        "data": "roles"
-                    },
-                    {
-                        "data": "enabled"
-                    },
-                    {
-                        "data": "registered"
+                        "data": "calories"
                     },
                     {
                         "defaultContent": "Edit",
@@ -39,19 +50,4 @@ $(function () {
             })
         }
     );
-
-    $("input:checkbox.user-status").click(function () {
-        enable($(this).closest("tr").prop("id"), this.checked)
-    });
 });
-
-function enable(id, enabled) {
-    $.ajax({
-        url: context.ajaxUrl + "enable",
-        type: "POST",
-        data: "id=" + id + "&enabled=" + enabled
-    }).done(function () {
-        updateTable();
-        successNoty("Change user status");
-    });
-}
