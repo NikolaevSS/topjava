@@ -51,7 +51,7 @@ function enable(id, enabled) {
         type: "POST",
         data: "id=" + id + "&enabled=" + enabled
     }).done(function () {
-        updateTable();
+        document.getElementById(id).setAttribute("data-user-enabled", enabled);
         successNoty("Change user status");
     });
 }

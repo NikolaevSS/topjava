@@ -16,12 +16,12 @@ dd {
 }
 
 tr[data-mealExcess="false"],
-tr[data-userEnabled="true"] {
+tr[data-user-enabled="true"] {
     color: green;
 }
 
 tr[data-mealExcess="true"],
-tr[data-userEnabled="false"] {
+tr[data-user-enabled="false"] {
     color: red;
 }
 
