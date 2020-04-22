@@ -13,6 +13,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -84,6 +85,23 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void notUpdateEmptyMeal() throws Exception {
+        String content =
+                perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.writeValue(new Meal()))
+                        .with(userHttpBasic(USER)))
+                        .andExpect(status().isUnprocessableEntity())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        assertNotNull(content);
+        assertContains(content, DATE_TIME_MUST_NOT_BE_NULL);
+        assertContains(content, DESCRIPTION_MUST_NOT_BE_BLANK);
+        assertContains(content, CALORIES_MUST_NOT_BE_NULL);
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         Meal newMeal = MealTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -96,6 +114,23 @@ class MealRestControllerTest extends AbstractControllerTest {
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
         MEAL_MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
+    }
+
+    @Test
+    void notCreateEmptyMeal() throws Exception {
+        String content =
+                perform(MockMvcRequestBuilders.post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.writeValue(new Meal()))
+                        .with(userHttpBasic(USER)))
+                        .andExpect(status().isUnprocessableEntity())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        assertNotNull(content);
+        assertContains(content, DATE_TIME_MUST_NOT_BE_NULL);
+        assertContains(content, DESCRIPTION_MUST_NOT_BE_BLANK);
+        assertContains(content, CALORIES_MUST_NOT_BE_NULL);
     }
 
     @Test

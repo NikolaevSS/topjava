@@ -13,7 +13,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.AllActiveProfileResolver;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @SpringJUnitWebConfig(locations = {
@@ -50,5 +52,11 @@ abstract public class AbstractControllerTest {
 
     public ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    protected void assertContains(@NotNull String actual, @NotNull String expectedContains) {
+        assertTrue(actual.contains(expectedContains),
+                String.format("expected value [%s] not contained in actual [%s]", expectedContains, actual)
+        );
     }
 }

@@ -12,8 +12,8 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 public class UserTestData {
     public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsComparator(User.class, "registered", "meals", "password");
 
-    public static String jsonWithPassword(User user, String passw) {
-        return JsonUtil.writeAdditionProps(user, "password", passw);
+    public static String jsonWithPassword(HasId object, String passw) {
+        return JsonUtil.writeAdditionProps(object, "password", passw);
     }
 
     public static final int USER_ID = START_SEQ;
@@ -21,6 +21,11 @@ public class UserTestData {
 
     public static final User USER = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.USER);
     public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ADMIN, Role.USER);
+
+    public static final String NAME_MUST_NOT_BE_BLANK = "[name] must not be blank";
+    public static final String EMAIL_MUST_NOT_BE_BLANK = "[email] must not be blank";
+    public static final String EMAIL_ALREADY_EXISTS = "[email] User with this email already exists";
+    public static final String PASSWORD_MUST_NOT_BE_BLANK = "[password] must not be blank";
 
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.USER));

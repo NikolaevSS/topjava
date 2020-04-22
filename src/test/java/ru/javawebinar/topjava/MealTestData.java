@@ -28,6 +28,10 @@ public class MealTestData {
 
     public static final List<Meal> MEALS = List.of(MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
 
+    public static final String DATE_TIME_MUST_NOT_BE_NULL = "[dateTime] must not be null";
+    public static final String DESCRIPTION_MUST_NOT_BE_BLANK = "[description] must not be blank";
+    public static final String CALORIES_MUST_NOT_BE_NULL = "[calories] must not be null";
+
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);
     }
